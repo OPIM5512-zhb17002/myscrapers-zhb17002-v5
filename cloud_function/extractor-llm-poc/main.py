@@ -156,7 +156,7 @@ def _safe_int(x):
 # -------------------- VERTEX AI CALL --------------------
 def _vertex_extract_fields(raw_text: str) -> dict:
     """
-    Ask Gemini to return JSON with exactly: price, year, make, model,transmission, mileage.
+    Ask Gemini to return JSON with exactly: price, year, make, model,transmission,doors, mileage.
     """
     model = _get_vertex_model()
 
@@ -169,6 +169,7 @@ def _vertex_extract_fields(raw_text: str) -> dict:
             "make": {"type": "string", "nullable": True},
             "model": {"type": "string", "nullable": True},
             "transmission": {"type": "string", "nullable": True},
+            "doors": {"type": "integer", "nullable": True},
             "mileage": {"type": "integer", "nullable": True},
         },
         "required": ["price", "year", "make", "model","transmission", "mileage"]
@@ -181,6 +182,7 @@ def _vertex_extract_fields(raw_text: str) -> dict:
         "If a value is not present, use null. "
         "Rules: integers for price/year/mileage; price in USD; mileage in miles; "
         "the transmission can be manual or automatic, or if not listed, write null."
+        "the value for number of doors will be an integer, or if not listed, write null."
         "do not infer values not explicitly present; do not add extra keys."
     )
 
@@ -224,6 +226,7 @@ def _vertex_extract_fields(raw_text: str) -> dict:
     parsed["price"] = _safe_int(parsed.get("price"))
     parsed["year"] = _safe_int(parsed.get("year"))
     parsed["mileage"] = _safe_int(parsed.get("mileage"))
+    parsed["doors"] = _safe_int(parsed.get("doors"))
     
     def _norm_str(s):
         if s is None: return None
@@ -317,6 +320,7 @@ def llm_extract_http(request: Request):
                 "scraped_at": base_rec.get("scraped_at", structured_iso),
                 "source_txt": source_txt_key,
                 "price": parsed.get("price"),
+                "doors": parsed.get("doors"),
                 "year": parsed.get("year"),
                 "make": parsed.get("make"),
                 "model": parsed.get("model"),
