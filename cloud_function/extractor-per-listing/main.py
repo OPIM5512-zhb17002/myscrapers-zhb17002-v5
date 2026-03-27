@@ -148,6 +148,61 @@ def parse_listing(text: str) -> dict:
             except ValueError: mi = None
     if mi is not None:
         d["mileage"] = mi
+    
+    #fuel
+    fuel=None
+    try:
+      fuel=re.search(r"\b(fuel)\b\s*[:]?\s*([A-Z]+)",text, re.I)
+    except ValueError: fuel = None
+    try:
+      fuel=fuel.group(2)
+      fuel=fuel.lower()
+    except ValueError: fuel = None
+    d["fuel"]=fuel
+
+    #drive
+    drive=None
+    try:
+      drive=re.search(r"(\b(drive)\b\s*[:]?\s*(4wd|[afr]wd))",text,re.I)
+    except ValueError: drive=None
+    try:
+      drive=drive.group(3)
+      drive=drive.lower()
+    except ValueError: drive=None
+    d['drive']=drive
+
+    #transmission
+    transmission=None
+    try:
+      transmission=re.search(r"(\b(transmission)\b\s*?[:]?\s*\b([A-Z]+)\b)",text,re.I)
+    except ValueError: transmission=None
+    try:
+      transmission=transmission.group(3)
+      transmission=transmission.lower()
+    except ValueError:drive=None
+    d['transmission']=transmission
+
+    #VIN
+    VIN=None
+    try:
+      VIN=re.search(r"(\b(vin)\b\s*?[:]?\s*([\dA-HJ-NPR-Z]{17})\b)",text,re.I)
+    except ValueError:VIN=None
+    try:
+      VIN=VIN.group(3)
+      VIN=VIN.upper()
+    except ValueError:VIN=None
+    d['VIN']=VIN
+
+    #title_status
+    title_status=None
+    try:
+      title_status=re.search(r"(title status)\s*?[:]?\s*\b([A-Z]+)\b",text,re.I)
+    except ValueError:title_status=None
+    try:
+      title_status=title_status.group(2)
+      title_status=title_status.lower()
+    except ValueError:title_status=None
+    d['title_status']=title_status
 
     return d
 
