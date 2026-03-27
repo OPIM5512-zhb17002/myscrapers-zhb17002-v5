@@ -232,6 +232,7 @@ def _vertex_extract_fields(raw_text: str) -> dict:
 
     parsed["make"] = _norm_str(parsed.get("make"))
     parsed["model"] = _norm_str(parsed.get("model"))
+    parsed["transmission"] = _norm_str(parsed.get("transmission"))
 
     return parsed
 
@@ -319,6 +320,7 @@ def llm_extract_http(request: Request):
                 "year": parsed.get("year"),
                 "make": parsed.get("make"),
                 "model": parsed.get("model"),
+                "transmission": parsed.get("transmission"),
                 "mileage": parsed.get("mileage"),
                 "llm_provider": "vertex",
                 "llm_model": LLM_MODEL,
